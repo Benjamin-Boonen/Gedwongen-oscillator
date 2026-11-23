@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 import scipy.signal as sgl
 import scipy.optimize as sp
 
-FILENAME = "9-11-with-timestamps.cylinder"
+FILENAME = "degelijke metingen (no AI)/sweep/m10.cylinder"
 
-streepjes_lengte = 0.01
+streepjes_lengte = 0.001
 
 fig, ax = plt.subplots(3)
 
@@ -60,7 +60,7 @@ dip=False
 tmp = []
 n_toleration, n = 1, 0
 
-lower_bound = np.min(speed) + 0.69
+lower_bound = np.min(speed) + 0.05
 for i in range(len(speed)):
     if speed[i] <= lower_bound:
         dip=True
