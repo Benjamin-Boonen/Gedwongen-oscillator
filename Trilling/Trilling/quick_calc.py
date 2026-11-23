@@ -1,15 +1,10 @@
 import pickle
 import numpy as np
-import matplotlib.pyplot as plt
 
 FILENAME = "degelijke metingen (no AI)/sweep/m27.cylinder"
 
-with open(FILENAME, "rb") as f:
-            vals = pickle.load(f)
-vals = np.array(vals)
-
-def calc(FILENAME=FILENAME):
-    with open(FILENAME, "rb") as f:
+def calc(filename):
+    with open(filename, "rb") as f:
         vals = pickle.load(f)
     vals = np.array(vals)
     # CALCULATE THE PERIOD
@@ -39,19 +34,14 @@ def calc(FILENAME=FILENAME):
     zero_flip_indexes_wheel = zero_flip_indexes_wheel[1::2]
     times_of_zeroes_wheel = vals[3][zero_flip_indexes_wheel]
 
-    wh_periods = np.diff(times_of_zeroes_wheel) # De periode is het verschil (difference) tussen deze tijdsmetingen
-    wh_period, wh_period_sdev = np.average(wh_periods), np.std(wh_periods, ddof=0)
-    wh_frequencies = 1 / wh_periods
-    wh_freq, wh_freq_sdev = np.mean(wh_frequencies), np.std(wh_frequencies, ddof=0)
+    if len(times_of_zeroes_wheel) >= 2:
+        wh_periods = np.diff(times_of_zeroes_wheel)
+        wh_period, wh_period_sdev = np.average(wh_periods), np.std(wh_periods, ddof=0)
+        wh_frequencies = 1 / wh_periods
+        wh_freq, wh_freq_sdev = np.mean(wh_frequencies), np.std(wh_frequencies, ddof=0)
+    else:
+        wh_period = wh_period_sdev = wh_freq = wh_freq_sdev = None
 
-    print(f"flips per period: {np.mean(flip_counts):.2f}")
-    print(f"amplitude:        {amp:.3f} cm +/- {amp_sdev:.3f} cm")
-
-    print(f"period:     {period} sec +/- {period_sdev} sec")
-    print(f"frequency:  {freq} Hz +/- {freq_sdev} Hz")
-
-    print(f"wheel period:     {wh_period} sec +/- {wh_period_sdev} sec")
-    print(f"wheel frequency:  {wh_freq} Hz +/- {wh_freq_sdev} Hz")
     return {"period": period,
             "period_sdev": period_sdev, 
             "freq": freq, 
@@ -63,4 +53,5 @@ def calc(FILENAME=FILENAME):
             "wh_freq": wh_freq,
             "wh_freq_sdev": wh_freq_sdev}
 
-calc()
+if __name__ == "__main__":
+    print(calc(FILENAME))
